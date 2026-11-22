@@ -735,23 +735,87 @@ function updateRivals(dt){
 }
 
 // Roadside objects movement
-function moveWorld(dt){
- const movement=speed*dt*.65;
+function moveWorld(dt) {
+  const movement = speed * dt * 0.65;
 
- laneLines.forEach(o=>{
-  o.position.z+=movement;
-  if(o.position.z>15)o.position.z-=450;
- });
+  laneLines.forEach(o => {
+    o.position.z += movement;
+    if (o.position.z > 15) o.position.z -= 450;
+  });
 
- roadGlows.forEach(o=>{
-  o.position.z+=movement;
-  if(o.position.z>15)o.position.z-=440;
- });
+  roadGlows.forEach(o => {
+    o.position.z += movement;
+    if (o.position.z > 15) o.position.z -= 440;
+  });
 
- lamps.forEach(o=>{
-  o.position.z+=movement;
-  if(o.position.z>20)o.position.z-=430;
- });
+  lamps.forEach(o => {
+    o.position.z += movement;
+    if (o.position.z > 20) o.position.z -= 430;
+  });
 
- buildings.forEach(o=>{
-  o.position.z+=
+  buildings.forEach(o => {
+    o.position.z += movement;
+    if (o.position.z > 30) o.position.z -= 500;
+  });
+
+  stars.forEach(o => {
+    o.position.z += movement * 0.5;
+    if (o.position.z > 20) o.position.z -= 440;
+  });
+}
+
+// Main game loop
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const dt = Math.min(clock.getDelta(), 0.05);
+
+  if (running) {
+    if (accel) speed += 55 * dt;
+    else speed -= 12 * dt;
+
+    if (braking) speed -= 90 * dt;
+
+    if (boosting && nitroPower > 0) {
+      speed += 75 * dt;
+      nitroPower -= 25 * dt;
+      playerData.flames.forEach(f => f.visible = true);
+    } else {
+      nitroPower = Math.min(100, nitroPower + 8 * dt);
+      playerData.flames.forEach(f => f.visible = false);
+    }
+
+    speed = Math.max(0, Math.min(speed, 240));
+    nitroPower = Math.max(0, nitroPower);
+
+    player.position.x += steer * 7 * dt;
+    player.position.x = Math.max(-5, Math.min(5, player.position.x));
+
+    player.rotation.z = -steer * 0.12;
+
+    playerData.wheels.forEach(w => {
+      w.rotation.x += speed * dt * 0.04;
+    });
+
+    distance += speed * dt * 0.08;
+
+    updateRivals(dt);
+    moveWorld(dt);
+
+    speedEl.textContent = Math.floor(speed);
+    distEl.textContent = Math.floor(distance);
+    nitroFill.style.width = nitroPower + "%";
+
+    if (speed > 0) {
+      camera.position.x += (player.position.x * 0.35 - camera.position.x) * dt * 3;
+    }
+  }
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+})();
