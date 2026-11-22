@@ -1,194 +1,313 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>PROJECT NITRO — Street Racing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#050510">
+<title>PROJECT NITRO 2.0</title>
 <style>
-:root{--cyan:#45e7ff;--orange:#ff6a2a;--dark:#080d18}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080d18;font-family:Arial,Helvetica,sans-serif;color:#fff;touch-action:none}
-#game{position:fixed;inset:0}canvas{display:block}
-#hud{position:fixed;inset:0;pointer-events:none}
-.panel{background:linear-gradient(135deg,rgba(7,15,30,.88),rgba(10,24,43,.58));border:1px solid rgba(69,231,255,.3);box-shadow:0 8px 30px #0006;backdrop-filter:blur(8px);border-radius:14px}
-#brand{position:absolute;top:16px;left:16px;padding:10px 14px}
-#brand strong{font-size:17px;letter-spacing:3px;color:var(--cyan)}#brand small{display:block;font-size:9px;letter-spacing:2px;color:#b6c5d9;margin-top:3px}
-#stats{position:absolute;top:16px;right:16px;padding:10px 14px;text-align:right;min-width:112px}
-#speed{font-size:30px;font-weight:900;line-height:1;color:#fff}#speed span{font-size:10px;color:var(--cyan);letter-spacing:2px}
-#distance{font-size:11px;color:#b7c6d8;margin-top:5px}
-#nitroWrap{position:absolute;top:100px;right:16px;width:130px;padding:8px 10px}
-#nitroWrap label{font-size:9px;letter-spacing:2px;color:var(--cyan)}#nitroBar{height:6px;background:#26394c;border-radius:10px;margin-top:6px;overflow:hidden}#nitroFill{height:100%;width:100%;background:linear-gradient(90deg,#27c8ff,#a8fbff);box-shadow:0 0 12px #45e7ff}
-#message{position:absolute;top:22%;left:50%;transform:translateX(-50%);text-align:center;width:min(90%,500px);text-shadow:0 3px 15px #000}
-#message h1{font-size:clamp(28px,7vw,56px);margin:0;letter-spacing:4px;font-style:italic}#message p{color:#c6d4e4;font-size:13px;line-height:1.5}
-#overlay{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,#06101bc9,#050914e8);z-index:5;padding:20px}
-#menu{width:min(92vw,430px);padding:26px;text-align:center;border-radius:22px;background:linear-gradient(145deg,#101f34f2,#07101df2);border:1px solid #45e7ff66;box-shadow:0 25px 80px #000b}
-.logo{font-size:clamp(34px,9vw,54px);font-weight:1000;font-style:italic;letter-spacing:2px;margin:0;color:#fff;text-shadow:3px 3px 0 #087eaa}
-.logo span{color:var(--cyan)}.sub{font-size:10px;letter-spacing:4px;color:#a8c1d5;margin:4px 0 20px}
-#menu p{font-size:13px;color:#c4d0dd;line-height:1.6}
-button{border:0;cursor:pointer;font-weight:900;letter-spacing:2px}
-#start{width:100%;padding:16px;border-radius:10px;background:linear-gradient(90deg,#13bde9,#56efff);color:#04111b;font-size:14px;margin-top:12px;box-shadow:0 7px 24px #20c7ed44}
-#help{font-size:10px;color:#8298ac;margin-top:15px;line-height:1.7}
-#controls{position:fixed;inset:0;pointer-events:none;z-index:3}
-.pad{position:absolute;bottom:22px;display:flex;gap:12px;pointer-events:auto}
-#steer{left:18px}#pedals{right:18px;align-items:flex-end}
-.ctrl{width:64px;height:64px;border-radius:18px;background:linear-gradient(145deg,#142b43dd,#071321dd);border:1px solid #75dfff88;color:white;font-size:24px;box-shadow:0 8px 20px #0007;touch-action:none;user-select:none}
-.ctrl:active,.ctrl.active{background:#1baed1;color:#04111b}
-#pedals .ctrl{width:66px;height:72px;font-size:12px;letter-spacing:1px}
-#boost{border-color:#ff9a52;color:#ffb27f}
-#toast{position:absolute;bottom:112px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:2px;color:#fff;background:#071321cc;padding:8px 12px;border-radius:20px;opacity:0;transition:opacity .2s}
-#toast.show{opacity:1}
-@media(min-width:800px){.ctrl{width:70px;height:70px}#pedals .ctrl{width:76px;height:78px}#steer{left:34px}#pedals{right:34px}}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#03030b;font-family:Arial,sans-serif;color:white;touch-action:none}
+#game{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;background:#03030b}
+canvas{display:block;width:100%;height:100%}
+#hud{position:absolute;inset:0;pointer-events:none;z-index:3}
+.top{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-start}
+.panel{background:#071323bb;border:1px solid #00d9ff88;padding:9px 14px;border-radius:10px;box-shadow:0 0 15px #00bfff33;backdrop-filter:blur(8px)}
+.small{font-size:10px;color:#8ceaff;letter-spacing:2px}
+.big{font-size:22px;font-weight:900;text-shadow:0 0 12px #00cfff}
+#speed{font-size:30px}
+#nitroBar{width:130px;height:7px;background:#162536;border-radius:8px;margin-top:6px;overflow:hidden}
+#nitroFill{height:100%;width:100%;background:linear-gradient(90deg,#00eaff,#ff00d9);box-shadow:0 0 10px #00eaff}
+#message{position:absolute;top:27%;width:100%;text-align:center;font-size:clamp(24px,5vw,48px);font-weight:1000;letter-spacing:5px;color:#fff;text-shadow:0 0 15px #00dfff,0 0 35px #ff00d9}
+#submessage{font-size:12px;letter-spacing:3px;color:#9befff;margin-top:10px}
+.controls{position:absolute;bottom:18px;left:0;right:0;display:flex;justify-content:space-between;align-items:end;padding:0 22px;pointer-events:auto}
+.controlGroup{display:flex;gap:12px}
+.ctrl{width:65px;height:65px;border-radius:50%;border:2px solid #00dfff;background:#06162dcc;color:white;font-size:26px;font-weight:bold;box-shadow:0 0 18px #00cfff66;touch-action:none}
+.ctrl:active{background:#00bde8;color:#001018;transform:scale(.94)}
+#nitro{width:76px;height:76px;border-color:#ff00d9;color:#ff8bea;font-size:12px;letter-spacing:1px}
+#startScreen{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#101b39dd,#03030bf5);text-align:center;padding:20px}
+.startBox{max-width:500px;width:90%;padding:28px 20px;border:1px solid #00dfff88;border-radius:20px;background:#071020dd;box-shadow:0 0 45px #00bfff33}
+.logo{font-size:clamp(30px,7vw,58px);font-weight:1000;font-style:italic;letter-spacing:3px;color:white;text-shadow:0 0 15px #00dfff,0 0 35px #ff00d9}
+.logo span{color:#00eaff}
+.tag{font-size:11px;letter-spacing:5px;color:#ff68e8;margin:10px 0 25px}
+#startBtn{border:0;padding:15px 38px;border-radius:8px;background:linear-gradient(90deg,#00cfff,#a000ff);color:white;font-weight:900;font-size:16px;letter-spacing:3px;box-shadow:0 0 25px #00bfff77}
+.hint{font-size:10px;color:#8ca9c5;margin-top:20px;letter-spacing:1px;line-height:1.8}
+#countdown{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:100px;font-weight:1000;color:#fff;text-shadow:0 0 30px #00eaff;z-index:4}
+@media(orientation:portrait){
+ #game{position:fixed;width:100vh;height:100vw;left:0;top:0;transform-origin:top left;transform:rotate(90deg) translateY(-100%);}
+}
 </style>
 </head>
 <body>
-<div id="game"></div>
+<div id="game">
 <div id="hud">
- <div id="brand" class="panel"><strong>PROJECT NITRO</strong><small>ARCADE STREET RACING</small></div>
- <div id="stats" class="panel"><div id="speed">000 <span>KM/H</span></div><div id="distance">DISTANCE&nbsp; 0.0 KM</div></div>
- <div id="nitroWrap" class="panel"><label>NITRO BOOST</label><div id="nitroBar"><div id="nitroFill"></div></div></div>
- <div id="message"><h1 id="headline">READY TO RACE?</h1><p id="subline">Stay on the road. Dodge traffic. Push your limits.</p></div>
- <div id="toast">NITRO ENGAGED</div>
+ <div class="top">
+  <div class="panel"><div class="small">PROJECT NITRO</div><div class="big">2.0 <span style="color:#ff42df">NEON CITY</span></div></div>
+  <div class="panel" style="text-align:right"><div class="small">SPEED</div><div class="big"><span id="speed">0</span><small style="font-size:11px"> KM/H</small></div></div>
+  <div class="panel"><div class="small">NITRO POWER</div><div id="nitroBar"><div id="nitroFill"></div></div><div class="small" style="margin-top:5px">DISTANCE: <span id="distance">0</span> M</div></div>
+ </div>
+ <div id="message">READY TO RACE<div id="submessage">NEON CITY GRAND PRIX</div></div>
+ <div class="controls">
+  <div class="controlGroup">
+   <button class="ctrl" id="left">◀</button>
+   <button class="ctrl" id="right">▶</button>
+  </div>
+  <div class="controlGroup">
+   <button class="ctrl" id="brake">▼</button>
+   <button class="ctrl" id="nitro">NITRO</button>
+   <button class="ctrl" id="accelerate">▲</button>
+  </div>
+ </div>
 </div>
-<div id="controls">
- <div id="steer" class="pad">
-  <button class="ctrl" data-control="left" aria-label="Steer left">◀</button>
-  <button class="ctrl" data-control="right" aria-label="Steer right">▶</button>
- </div>
- <div id="pedals" class="pad">
-  <button class="ctrl" id="boost" data-control="boost">N₂O</button>
-  <button class="ctrl" data-control="brake">BRAKE</button>
-  <button class="ctrl" data-control="gas">GAS</button>
+<div id="countdown">3</div>
+<div id="startScreen">
+ <div class="startBox">
+  <div class="logo">PROJECT <span>NITRO</span></div>
+  <div class="tag">2.0 — NEON CITY</div>
+  <button id="startBtn">START ENGINE</button>
+  <div class="hint">3D ARCADE RACING EXPERIENCE<br>STEER • ACCELERATE • USE NITRO<br>BUILT FOR SPEED</div>
  </div>
 </div>
-<div id="overlay">
- <div id="menu">
-  <h1 class="logo">PROJECT <span>NITRO</span></h1>
-  <div class="sub">NO RULES. JUST SPEED.</div>
-  <p>A fast-paced 3D arcade racer. Weave through traffic, build speed and hit the nitro.</p>
-  <button id="start">START ENGINE&nbsp; ▶</button>
-  <div id="help">MOBILE: use the on-screen controls<br>COMPUTER: ← → steer · ↑ accelerate · ↓ brake · SPACE nitro</div>
- </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
 (() => {
-'use strict';
-const mount=document.getElementById('game');
-const overlay=document.getElementById('overlay');
-const startBtn=document.getElementById('start');
-const speedEl=document.getElementById('speed');
-const distanceEl=document.getElementById('distance');
-const nitroFill=document.getElementById('nitroFill');
-const headline=document.getElementById('headline');
-const subline=document.getElementById('subline');
-const toast=document.getElementById('toast');
-if(!window.THREE){document.getElementById('menu').innerHTML='<h2>3D engine could not load</h2><p>Please connect to the internet and reload the page.</p>';return;}
+const root=document.getElementById('game');
 const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x91b7d0);
-scene.fog=new THREE.Fog(0x91b7d0,55,190);
-const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,350);
-camera.position.set(0,5.1,10);
-const renderer=new THREE.WebGLRenderer({antialias:true});
+scene.background=new THREE.Color(0x050514);
+scene.fog=new THREE.FogExp2(0x08091d,0.012);
+const camera=new THREE.PerspectiveCamera(65,1,0.1,700);
+camera.position.set(0,6,12);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
-renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-renderer.outputColorSpace=THREE.SRGBColorSpace;
-mount.appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xd8efff,0x43505b,2.0));
-const sun=new THREE.DirectionalLight(0xffffff,2.4);sun.position.set(-12,24,15);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
-const mat=(color,roughness=.75,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
-const roadMat=mat(0x252b33),lineMat=mat(0xf5f4e9),grassMat=mat(0x3b7650),darkMat=mat(0x111820),wheelMat=mat(0x080b10),glassMat=new THREE.MeshStandardMaterial({color:0x142d42,metalness:.35,roughness:.2});
-const road=new THREE.Mesh(new THREE.PlaneGeometry(15,260),roadMat);road.rotation.x=-Math.PI/2;road.position.set(0,-.04,-85);road.receiveShadow=true;scene.add(road);
-const grass=new THREE.Mesh(new THREE.PlaneGeometry(180,300),grassMat);grass.rotation.x=-Math.PI/2;grass.position.set(0,-.09,-85);grass.receiveShadow=true;scene.add(grass);
-const edgeMat=mat(0xe8e8df);
-for(const x of [-7.25,7.25]){const edge=new THREE.Mesh(new THREE.BoxGeometry(.12,.025,260),edgeMat);edge.position.set(x,.01,-85);scene.add(edge);}
-const dashes=[];
-for(let z=8;z>-220;z-=10){for(const x of [-2.5,2.5]){const dash=new THREE.Mesh(new THREE.BoxGeometry(.13,.025,4.5),lineMat);dash.position.set(x,.012,z);scene.add(dash);dashes.push(dash);}}
-function makeCar(color=0xff3e32){
- const root=new THREE.Group();
- const body=new THREE.Mesh(new THREE.BoxGeometry(1.85,.55,3.65),mat(color,.28,.45));body.position.y=.72;body.castShadow=true;root.add(body);
- const hood=new THREE.Mesh(new THREE.BoxGeometry(1.72,.2,1.05),mat(color,.25,.4));hood.position.set(0,1.02,-1.05);root.add(hood);
- const cabin=new THREE.Mesh(new THREE.BoxGeometry(1.35,.67,1.55),glassMat);cabin.position.set(0,1.25,.25);cabin.castShadow=true;root.add(cabin);
- const roof=new THREE.Mesh(new THREE.BoxGeometry(1.28,.12,.9),mat(color,.25,.35));roof.position.set(0,1.63,.23);root.add(roof);
- const wheels=[];
- for(const x of [-.98,.98])for(const z of [-1.15,1.15]){const w=new THREE.Mesh(new THREE.CylinderGeometry(.39,.39,.24,16),wheelMat);w.rotation.z=Math.PI/2;w.position.set(x,.43,z);w.castShadow=true;root.add(w);wheels.push(w);}
- const lampMat=new THREE.MeshBasicMaterial({color:0xfff2c4});
- for(const x of [-.62,.62]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(.34,.13,.06),lampMat);lamp.position.set(x,.78,-1.84);root.add(lamp);}
- const tailMat=new THREE.MeshBasicMaterial({color:0xff142c});
- for(const x of [-.62,.62]){const lamp=new THREE.Mesh(new THREE.BoxGeometry(.34,.13,.06),tailMat);lamp.position.set(x,.78,1.84);root.add(lamp);}
- root.userData.wheels=wheels;return root;
-}
-const player=makeCar(0x10bfe8);player.position.set(0,0,3);scene.add(player);
-const rivals=[];
-const colors=[0xffb12b,0x9a62ff,0xf4f4f4,0x28c76f,0xff4b65];
-function spawnRival(z){
- const c=makeCar(colors[Math.floor(Math.random()*colors.length)]);
- c.scale.setScalar(.92);c.position.set([-4.8,-2.4,2.4,4.8][Math.floor(Math.random()*4)],0,z);scene.add(c);
- rivals.push({mesh:c,speed:18+Math.random()*17,passed:false});
-}
-for(let i=0;i<7;i++)spawnRival(-35-i*27);
-const trees=[];
-const trunkMat=mat(0x59402b),leafMat=mat(0x20583b);
-for(let i=0;i<48;i++){const side=i%2?1:-1,z=10-Math.floor(i/2)*10;const group=new THREE.Group();const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.16,.22,1.5,7),trunkMat);trunk.position.y=.75;group.add(trunk);const leaves=new THREE.Mesh(new THREE.ConeGeometry(1.05,2.7,7),leafMat);leaves.position.y=2.55;group.add(leaves);group.position.set(side*(10+Math.random()*7),0,z);scene.add(group);trees.push(group);}
-const keys={left:false,right:false,gas:false,brake:false,boost:false};
-let running=false,speed=0,nitro=100,distance=0,steer=0,elapsed=0,last=performance.now(),toastTimer=0,shake=0;
-function setControl(name,on){if(name in keys)keys[name]=on;document.querySelectorAll('[data-control="'+name+'"]').forEach(b=>b.classList.toggle('active',on));}
-document.querySelectorAll('[data-control]').forEach(b=>{
- const name=b.dataset.control;
- b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);setControl(name,true);});
- ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,e=>{e.preventDefault();setControl(name,false);}));
-});
-addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space'].includes(e.code))e.preventDefault();if(e.code==='ArrowLeft'||e.code==='KeyA')setControl('left',true);if(e.code==='ArrowRight'||e.code==='KeyD')setControl('right',true);if(e.code==='ArrowUp'||e.code==='KeyW')setControl('gas',true);if(e.code==='ArrowDown'||e.code==='KeyS')setControl('brake',true);if(e.code==='Space')setControl('boost',true);});
-addEventListener('keyup',e=>{if(e.code==='ArrowLeft'||e.code==='KeyA')setControl('left',false);if(e.code==='ArrowRight'||e.code==='KeyD')setControl('right',false);if(e.code==='ArrowUp'||e.code==='KeyW')setControl('gas',false);if(e.code==='ArrowDown'||e.code==='KeyS')setControl('brake',false);if(e.code==='Space')setControl('boost',false);});
-function begin(){running=true;overlay.style.display='none';headline.textContent='';subline.textContent='';last=performance.now();}
-startBtn.addEventListener('click',begin);
-function showToast(){toast.classList.add('show');toastTimer=1;}
-function resetGame(){speed=0;nitro=100;distance=0;player.position.x=0;player.rotation.z=0;for(let i=0;i<rivals.length;i++){rivals[i].mesh.position.z=-35-i*27;rivals[i].mesh.position.x=[-4.8,-2.4,2.4,4.8][i%4];rivals[i].passed=false;}}
-function animate(now){
- requestAnimationFrame(animate);const dt=Math.min((now-last)/1000,.04);last=now;
- if(running){
-  elapsed+=dt;
-  const boosting=keys.boost&&nitro>0&&speed>8;
-  const target=keys.gas?49:0;
-  speed+=(target-speed)*(keys.gas?1.1:.42)*dt;
-  if(keys.brake)speed=Math.max(0,speed-48*dt);
-  if(boosting){speed=Math.min(66,speed+32*dt);nitro=Math.max(0,nitro-27*dt);if(toastTimer<=0)showToast();}
-  else nitro=Math.min(100,nitro+5.5*dt);
-  if(toastTimer>0){toastTimer-=dt;if(toastTimer<=0)toast.classList.remove('show');}
-  const steerInput=(keys.left?1:0)-(keys.right?1:0);
-  steer+=(steerInput-steer)*Math.min(1,dt*8);
-  player.position.x-=steer*(.11+speed*.002)*dt*15;
-  player.position.x=THREE.MathUtils.clamp(player.position.x,-5.7,5.7);
-  player.rotation.z=THREE.MathUtils.lerp(player.rotation.z,-steer*.16,dt*6);
-  player.userData.wheels.forEach(w=>w.rotation.x-=speed*dt*.12);
-  const move=speed*dt*.62;
-  distance+=speed*dt/3600;
-  dashes.forEach(d=>{d.position.z+=move;if(d.position.z>12)d.position.z-=260;});
-  trees.forEach(t=>{t.position.z+=move;if(t.position.z>15)t.position.z-=240;});
-  rivals.forEach((r,i)=>{
-   r.mesh.position.z+=(speed-r.speed)*dt*.62;
-   r.mesh.position.x+=Math.sin(elapsed*.8+i*2)*dt*.22;
-   r.mesh.userData.wheels.forEach(w=>w.rotation.x-=r.speed*dt*.12);
-   if(r.mesh.position.z>11){r.mesh.position.z=-190-Math.random()*55;r.mesh.position.x=[-4.8,-2.4,2.4,4.8][Math.floor(Math.random()*4)];r.speed=18+Math.random()*22;r.passed=false;}
-   if(Math.abs(r.mesh.position.z-player.position.z)<2.3&&Math.abs(r.mesh.position.x-player.position.x)<1.7){speed=Math.max(8,speed-24*dt);shake=.22;}
-  });
-  if(shake>0)shake-=dt;
-  camera.position.x=THREE.MathUtils.lerp(camera.position.x,player.position.x*.42,dt*2.8);
-  camera.position.y=5.1+(shake>0?Math.random()*.12:0);
-  camera.position.z=10.5;
-  camera.lookAt(player.position.x*.25,1,-5);
-  speedEl.innerHTML=String(Math.round(speed*3.6)).padStart(3,'0')+' <span>KM/H</span>';
-  distanceEl.textContent='DISTANCE  '+distance.toFixed(2)+' KM';
-  nitroFill.style.width=nitro+'%';
-  player.position.z=3;
- }else{
-  player.rotation.y=Math.sin(now*.0007)*.035;
-  camera.lookAt(0,1,-5);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.15;
+root.prepend(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0x9bbcff,0x111122,1.7));
+const moon=new THREE.DirectionalLight(0x9ccfff,2.2);
+moon.position.set(-8,15,8);moon.castShadow=true;scene.add(moon);
+
+const mat=(color,emissive=0x000000,intensity=0)=>new THREE.MeshStandardMaterial({color,roughness:.48,metalness:.45,emissive,emissiveIntensity:intensity});
+const roadMat=mat(0x11121c);
+const cyan=mat(0x00dfff,0x00bfff,2.2);
+const pink=mat(0xff00c8,0xff00aa,2);
+const white=mat(0xe9f5ff);
+const dark=mat(0x080d19);
+const road=new THREE.Mesh(new THREE.PlaneGeometry(22,700),roadMat);
+road.rotation.x=-Math.PI/2;road.position.set(0,-.08,-250);road.receiveShadow=true;scene.add(road);
+
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(500,700),mat(0x070817));
+ground.rotation.x=-Math.PI/2;ground.position.set(0,-.15,-250);scene.add(ground);
+
+const laneLines=[];
+for(let z=-380;z<20;z+=12){
+ for(let x of [-3.2,3.2]){
+  const line=new THREE.Mesh(new THREE.BoxGeometry(.09,.025,5),cyan);
+  line.position.set(x,.01,z);scene.add(line);laneLines.push(line);
  }
+}
+for(let x of [-5.5,5.5]){
+ const rail=new THREE.Mesh(new THREE.BoxGeometry(.16,.15,700),pink);
+ rail.position.set(x,.08,-250);scene.add(rail);
+}
+
+const buildings=[];
+for(let side of [-1,1]){
+ for(let i=0;i<45;i++){
+  const h=8+Math.random()*30,w=4+Math.random()*7,d=5+Math.random()*9;
+  const x=side*(12+Math.random()*25),z=-i*9-Math.random()*8;
+  const b=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(new THREE.Color().setHSL(.62+Math.random()*.12,.35,.12+Math.random()*.1)));
+  body.position.y=h/2;body.castShadow=true;b.add(body);
+  const trim=new THREE.Mesh(new THREE.BoxGeometry(w+.08,.13,d+.08),Math.random()>.5?cyan:pink);
+  trim.position.y=h*.75;b.add(trim);
+  for(let yy=2;yy<h-1;yy+=2.5){
+   for(let xx=-w/2+1;xx<w/2;xx+=1.7){
+    const win=new THREE.Mesh(new THREE.BoxGeometry(.65,.85,.04),Math.random()>.5?mat(0x24bfff,0x0077ff,1.4):mat(0xff39d9,0xaa0088,1.4));
+    win.position.set(xx,yy,d/2+.025);b.add(win);
+   }
+  }
+  b.position.set(x,0,z);scene.add(b);buildings.push(b);
+ }
+}
+
+const lamps=[];
+for(let z=-360;z<30;z+=18){
+ for(let side of [-1,1]){
+  const g=new THREE.Group();
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.07,.12,5,8),dark);
+  pole.position.y=2.5;g.add(pole);
+  const arm=new THREE.Mesh(new THREE.BoxGeometry(2,.08,.08),dark);
+  arm.position.set(-side,4.9,0);g.add(arm);
+  const bulb=new THREE.Mesh(new THREE.SphereGeometry(.22,10,8),cyan);
+  bulb.position.set(-side*1.8,4.8,0);g.add(bulb);
+  const glow=new THREE.PointLight(0x00ccff,1.6,9);
+  glow.position.copy(bulb.position);g.add(glow);
+  g.position.set(side*7,0,z);scene.add(g);lamps.push(g);
+ }
+}
+
+function makeCar(color,glowColor){
+ const group=new THREE.Group();
+ const body=new THREE.Mesh(new THREE.BoxGeometry(1.75,.55,3.5),mat(color,glowColor,.35));
+ body.position.y=.75;body.castShadow=true;group.add(body);
+ const hood=new THREE.Mesh(new THREE.BoxGeometry(1.65,.18,1.1),mat(color,glowColor,.3));
+ hood.position.set(0,1.04,-1.05);group.add(hood);
+ const cabin=new THREE.Mesh(new THREE.BoxGeometry(1.3,.65,1.5),mat(0x101c30));
+ cabin.position.set(0,1.3,.25);group.add(cabin);
+ const glass=new THREE.Mesh(new THREE.BoxGeometry(1.18,.42,.04),mat(0x36bde8,0x075477,.7));
+ glass.position.set(0,1.35,-.52);group.add(glass);
+ const wheelMat=mat(0x050505);
+ for(let x of [-.92,.92])for(let z of [-1.05,1.05]){
+  const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.38,.38,.22,16),wheelMat);
+  wheel.rotation.z=Math.PI/2;wheel.position.set(x,.42,z);group.add(wheel);
+ }
+ for(let x of [-.58,.58]){
+  const head=new THREE.Mesh(new THREE.BoxGeometry(.35,.12,.08),white);
+  head.position.set(x,.8,-1.78);group.add(head);
+  const tail=new THREE.Mesh(new THREE.BoxGeometry(.35,.12,.08),pink);
+  tail.position.set(x,.8,1.78);group.add(tail);
+ }
+ return group;
+}
+const player=makeCar(0x087cff,0x0055ff);
+player.position.set(0,0,5);scene.add(player);
+
+const rivals=[];
+for(let i=0;i<7;i++){
+ const car=makeCar([0xff174e,0xffa500,0x11ccaa,0x9944ff][i%4],0x220044);
+ car.position.set([-3.5,0,3.5][i%3],0,-35-i*38);
+ car.rotation.y=(Math.random()-.5)*.05;
+ scene.add(car);rivals.push({mesh:car,speed:35+Math.random()*35,passed:false});
+}
+
+const particles=[];
+for(let i=0;i<220;i++){
+ const star=new THREE.Mesh(new THREE.SphereGeometry(.055,5,5),mat(0x9bdfff,0x2d8cff,1.2));
+ star.position.set((Math.random()-.5)*150,Math.random()*55-2,-Math.random()*400);
+ scene.add(star);particles.push(star);
+}
+
+let running=false,gameOver=false,steer=0,speed=0,nitroPower=100,distance=0;
+let accel=false,braking=false,boost=false;
+let last=performance.now(),shake=0;
+const speedEl=document.getElementById('speed');
+const distEl=document.getElementById('distance');
+const nitroFill=document.getElementById('nitroFill');
+const message=document.getElementById('message');
+const startScreen=document.getElementById('startScreen');
+const countdown=document.getElementById('countdown');
+
+function resize(){
+ const w=root.clientWidth,h=root.clientHeight;
+ camera.aspect=w/h;camera.updateProjectionMatrix();
+ renderer.setSize(w,h,false);
+}
+new ResizeObserver(resize).observe(root);resize();
+
+function hold(id,down,up){
+ const el=document.getElementById(id);
+ el.addEventListener('pointerdown',e=>{e.preventDefault();down();});
+ ['pointerup','pointerleave','pointercancel'].forEach(ev=>el.addEventListener(ev,e=>{e.preventDefault();up();}));
+}
+hold('left',()=>steer=-1,()=>{if(steer===-1)steer=0});
+hold('right',()=>steer=1,()=>{if(steer===1)steer=0});
+hold('accelerate',()=>accel=true,()=>accel=false);
+hold('brake',()=>braking=true,()=>braking=false);
+hold('nitro',()=>boost=true,()=>boost=false);
+
+document.addEventListener('keydown',e=>{
+ if(e.key==='ArrowLeft'||e.key==='a')steer=-1;
+ if(e.key==='ArrowRight'||e.key==='d')steer=1;
+ if(e.key==='ArrowUp'||e.key==='w')accel=true;
+ if(e.key==='ArrowDown'||e.key==='s')braking=true;
+ if(e.code==='Space')boost=true;
+});
+document.addEventListener('keyup',e=>{
+ if(['ArrowLeft','a','ArrowRight','d'].includes(e.key))steer=0;
+ if(['ArrowUp','w'].includes(e.key))accel=false;
+ if(['ArrowDown','s'].includes(e.key))braking=false;
+ if(e.code==='Space')boost=false;
+});
+
+function start(){
+ startScreen.style.display='none';
+ let n=3;countdown.style.display='flex';countdown.textContent=n;
+ const timer=setInterval(()=>{
+  n--;
+  if(n>0)countdown.textContent=n;
+  else{
+   clearInterval(timer);countdown.style.display='none';
+   running=true;message.style.display='none';
+  }
+ },700);
+}
+document.getElementById('startBtn').addEventListener('click',start);
+
+function endGame(){
+ running=false;gameOver=true;
+ message.innerHTML='CRASHED!<div id="submessage">DISTANCE: '+Math.floor(distance)+' M</div>';
+ message.style.display='block';
+ setTimeout(()=>{
+  startScreen.style.display='flex';
+  document.querySelector('.tag').textContent='RACE AGAIN — BEAT YOUR DISTANCE';
+  document.getElementById('startBtn').textContent='RESTART RACE';
+ },1800);
+}
+
+function reset(){
+ speed=0;distance=0;nitroPower=100;steer=0;player.position.x=0;
+ rivals.forEach((r,i)=>{r.mesh.position.set([-3.5,0,3.5][i%3],0,-35-i*38);r.passed=false;});
+ gameOver=false;running=false;
+ document.getElementById('startBtn').textContent='START ENGINE';
+ document.querySelector('.tag').textContent='2.0 — NEON CITY';
+ message.innerHTML='READY TO RACE<div id="submessage">NEON CITY GRAND PRIX</div>';
+ message.style.display='block';startScreen.style.display='flex';
+}
+
+function update(dt){
+ if(running){
+  const max=boost&&nitroPower>0?190:125;
+  if(accel)speed+=75*dt;
+  else speed-=22*dt;
+  if(braking)speed-=100*dt;
+  if(boost&&nitroPower>0){speed+=95*dt;nitroPower-=28*dt;}
+  else nitroPower+=9*dt;
+  speed=THREE.MathUtils.clamp(speed,0,max);
+  nitroPower=THREE.MathUtils.clamp(nitroPower,0,100);
+  player.position.x+=steer*speed*.012*dt*10;
+  player.position.x=THREE.MathUtils.clamp(player.position.x,-4.2,4.2);
+  player.rotation.z=THREE.MathUtils.lerp(player.rotation.z,-steer*.13,.12);
+  distance+=speed*dt*.09;
+  laneLines.forEach(o=>{o.position.z+=speed*dt*.65;if(o.position.z>15)o.position.z-=400;});
+  lamps.forEach(o=>{o.position.z+=speed*dt*.65;if(o.position.z>20)o.position.z-=400;});
+  buildings.forEach(o=>{o.position.z+=speed*dt*.65;if(o.position.z>35)o.position.z-=420;});
+  particles.forEach(o=>{o.position.z+=speed*dt*.8;if(o.position.z>12)o.position.z=-390;});
+  rivals.forEach(r=>{
+   r.mesh.position.z+= (speed-r.speed)*dt*.65;
+   if(r.mesh.position.z>13){r.mesh.position.z=-300-Math.random()*100;r.mesh.position.x=[-3.5,0,3.5][Math.floor(Math.random()*3)];r.passed=false;}
+   if(Math.abs(r.mesh.position.z-player.position.z)<2.7&&Math.abs(r.mesh.position.x-player.position.x)<1.45){endGame();}
+  });
+  camera.position.x=THREE.MathUtils.lerp(camera.position.x,player.position.x*.45,.06);
+  camera.position.y=6+speed*.003;
+  camera.lookAt(player.position.x*.25,1,-9);
+  speedEl.textContent=Math.round(speed);
+  distEl.textContent=Math.floor(distance);
+  nitroFill.style.width=nitroPower+'%';
+ }
+}
+
+function animate(now){
+ requestAnimationFrame(animate);
+ const dt=Math.min((now-last)/1000,.04);last=now;
+ update(dt);
  renderer.render(scene,camera);
 }
 requestAnimationFrame(animate);
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 })();
 </script>
 </body>
