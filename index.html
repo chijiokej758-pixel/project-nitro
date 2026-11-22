@@ -734,7 +734,7 @@ function updateRivals(dt){
  });
 }
 
-// Roadside objects movement
+
 function moveWorld(dt) {
   const movement = speed * dt * 0.65;
 
@@ -764,12 +764,10 @@ function moveWorld(dt) {
   });
 }
 
-// Main game loop
 const clock = new THREE.Clock();
 
 function animate() {
   requestAnimationFrame(animate);
-
   const dt = Math.min(clock.getDelta(), 0.05);
 
   if (running) {
@@ -781,10 +779,8 @@ function animate() {
     if (boosting && nitroPower > 0) {
       speed += 75 * dt;
       nitroPower -= 25 * dt;
-      playerData.flames.forEach(f => f.visible = true);
     } else {
       nitroPower = Math.min(100, nitroPower + 8 * dt);
-      playerData.flames.forEach(f => f.visible = false);
     }
 
     speed = Math.max(0, Math.min(speed, 240));
@@ -792,11 +788,14 @@ function animate() {
 
     player.position.x += steer * 7 * dt;
     player.position.x = Math.max(-5, Math.min(5, player.position.x));
-
     player.rotation.z = -steer * 0.12;
 
     playerData.wheels.forEach(w => {
       w.rotation.x += speed * dt * 0.04;
+    });
+
+    playerData.flames.forEach(f => {
+      f.visible = boosting && nitroPower > 0;
     });
 
     distance += speed * dt * 0.08;
@@ -808,9 +807,8 @@ function animate() {
     distEl.textContent = Math.floor(distance);
     nitroFill.style.width = nitroPower + "%";
 
-    if (speed > 0) {
-      camera.position.x += (player.position.x * 0.35 - camera.position.x) * dt * 3;
-    }
+    camera.position.x +=
+      (player.position.x * 0.35 - camera.position.x) * dt * 3;
   }
 
   renderer.render(scene, camera);
